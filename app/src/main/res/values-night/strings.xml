@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="socketConnectionEstablished">Connected</string>
+    <string name="socket_Disconnected">Disconnected</string>
+    <string name="error">Something went Wrong</string>
+</resources>
