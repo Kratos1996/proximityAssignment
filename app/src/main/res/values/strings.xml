@@ -3,4 +3,6 @@
     <string name="socketConnectionEstablished">Connected</string>
     <string name="socket_Disconnected">Disconnected</string>
     <string name="error">Something went Wrong</string>
+    <string name="home">Home</string>
+    <string name="press_back_again">Press Back Again</string>
 </resources>

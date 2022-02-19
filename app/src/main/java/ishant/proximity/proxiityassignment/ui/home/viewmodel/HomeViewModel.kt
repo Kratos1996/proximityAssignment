@@ -17,7 +17,6 @@ class HomeViewModel(val coroutineProvider: CoroutineContextProvider,val service:
     Application()
 )
 {
-
     private var airQualityResponseFlow = MutableStateFlow<ResponseAirQualitySealed>(ResponseAirQualitySealed.Empty)
 
     sealed class ResponseAirQualitySealed {
