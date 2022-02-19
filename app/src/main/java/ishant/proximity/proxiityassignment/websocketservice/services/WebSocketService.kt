@@ -8,7 +8,7 @@ interface WebSocketService {
 
     suspend fun openSocket() : WebSocketState
 
-    fun GetCurrentData(): Flow<List<AirQualityResponse>>
+    fun GetCurrentData(): Flow<AirQualityResponse>
 
     suspend fun  closeSocket()
 
