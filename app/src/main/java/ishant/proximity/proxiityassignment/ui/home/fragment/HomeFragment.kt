@@ -61,13 +61,13 @@ class HomeFragment : Fragment(),RetrySnackBarClickListener,
                 when (event) {
                     is HomeViewModel.ResponseAirQualitySealed.loading -> {
                         if(event.isLoading){
-                            methods.show((requireActivity() as MainActivity).binding.progressBar)
+                            methods.show(binding.progressBar)
                         }else{
-                            methods.hide((requireActivity() as MainActivity).binding.progressBar)
+                            methods.hide(binding.progressBar)
                         }
                     }
                     is HomeViewModel.ResponseAirQualitySealed.Success -> {
-                        methods.hide((requireActivity() as MainActivity).binding.progressBar)
+                        methods.hide(binding.progressBar)
                         if(event.response.airQualityResponseNew.isNotEmpty()){
                             adapter.UpdateList(ArrayList(event.response.airQualityResponseNew.toMutableList()))
                         }else{
@@ -81,7 +81,7 @@ class HomeFragment : Fragment(),RetrySnackBarClickListener,
                         (requireActivity() as BaseActivity).showCustomAlert(event.message,binding.root)
                     }
                     is HomeViewModel.ResponseAirQualitySealed.ErrorOnResponse -> {
-                        methods.hide((requireActivity() as MainActivity).binding.progressBar)
+                        methods.hide(binding.progressBar)
                         (requireActivity() as BaseActivity).showCustomAlert(event.message,binding.root,getString(
                             R.string.retry),true, listener = this@HomeFragment)
                     }

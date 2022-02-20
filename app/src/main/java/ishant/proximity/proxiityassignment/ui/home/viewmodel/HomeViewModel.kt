@@ -31,11 +31,12 @@ class HomeViewModel(val methods: MethodsRepo,val service: WebSocketService) : An
     }
     fun connectSocketNow(){
         viewModelScope.launch {
+            airQualityResponseFlow.value = ResponseAirQualitySealed.message("Loading...")
             val result = service.openSocket()
             when(result){
                 is WebSocketState.Connected -> {
                     airQualityResponseFlow.value = ResponseAirQualitySealed.loading(true)
-                    airQualityResponseFlow.value = ResponseAirQualitySealed.message("Loading..")
+
                     service.GetCurrentData()
                         .onEach { airDataList ->
                             airQualityResponseFlow.value = ResponseAirQualitySealed.message("Please Wait While fetching Data")
