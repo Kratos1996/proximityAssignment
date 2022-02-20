@@ -21,12 +21,13 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
         data: AirQualityData,
         list:ArrayList<AirQualityData>
     ) {
-        binding.cityName.text=data.city
+
         binding.cityAQI.text=methods.roundOffDecimal(data.aqi!!).toString()
         binding.lastUpdate.text=methods.getTimeAgo(data.time!!)
         when (data.aqi) {
             in 0.0..50.0 -> {
                 //good
+                binding.cityName.text=data.city+" (Good)"
                 methods.setBackGround(context,binding.changeBackground,R.color.good)
                 binding.cityName.setTextColor(context.getColor(R.color.white))
                 binding.cityAQI.setTextColor(context.getColor(R.color.white))
@@ -34,6 +35,7 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
             }
             in 51.0..100.0 -> {
                 //satisfactory
+                binding.cityName.text=data.city+" (Satisfactory)"
                 methods.setBackGround(context,binding.changeBackground,R.color.satisfactory)
                 binding.cityName.setTextColor(context.getColor(R.color.white))
                 binding.cityAQI.setTextColor(context.getColor(R.color.white))
@@ -41,6 +43,7 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
             }
             in 101.0..200.0 -> {
                 //Moderate
+                binding.cityName.text=data.city+" (Moderate)"
                 methods.setBackGround(context,binding.changeBackground,R.color.moderate)
                 binding.cityName.setTextColor(context.getColor(R.color.black))
                 binding.cityAQI.setTextColor(context.getColor(R.color.black))
@@ -48,6 +51,7 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
             }
             in 201.0..300.0 -> {
                 //poor
+                binding.cityName.text=data.city+" (Poor)"
                 methods.setBackGround(context,binding.changeBackground,R.color.poor)
                 binding.cityName.setTextColor(context.getColor(R.color.white))
                 binding.cityAQI.setTextColor(context.getColor(R.color.white))
@@ -55,6 +59,7 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
             }
             in 301.0..400.0 -> {
                 //very poor
+                binding.cityName.text=data.city+" (Very Poor)"
                 methods.setBackGround(context,binding.changeBackground,R.color.verypoor)
                 binding.cityName.setTextColor(context.getColor(R.color.white))
                 binding.cityAQI.setTextColor(context.getColor(R.color.white))
@@ -62,6 +67,7 @@ class AirQualityListAdapter (context: Context,val methods:MethodsRepo,val listne
             }
             in 401.0..500.0 -> {
                 //severe
+                binding.cityName.text=data.city+" (Severe)"
                 methods.setBackGround(context,binding.changeBackground,R.color.severe)
                 binding.cityName.setTextColor(context.getColor(R.color.white))
                 binding.cityAQI.setTextColor(context.getColor(R.color.white))
