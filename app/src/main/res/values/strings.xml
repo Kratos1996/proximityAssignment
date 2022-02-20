@@ -3,6 +3,11 @@
     <string name="socketConnectionEstablished">Connected</string>
     <string name="socket_Disconnected">Disconnected</string>
     <string name="error">Something went Wrong</string>
-    <string name="home">Home</string>
+    <string name="please_wait">Please Wait...</string>
     <string name="press_back_again">Press Back Again</string>
+    <string name="few_second_ago">few second ago</string>
+    <string name="home">Home</string>
+    <string name="air_quality_chart">AirQualityChart</string>
+    <string name="data_not_found">Data Not Found</string>
+    <string name="retry">Retry</string>
 </resources>

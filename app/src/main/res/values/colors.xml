@@ -4,4 +4,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="gray">#00DAD0D0</color>
+    <color name="good">#55A84F</color>
+    <color name="satisfactory">#A3C853</color>
+    <color name="moderate">#FFF833</color>
+    <color name="poor">#F29C33</color>
+    <color name="verypoor">#E93F33</color>
+    <color name="severe">#AF2D24</color>
 </resources>

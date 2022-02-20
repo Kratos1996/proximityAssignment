@@ -1,4 +1,4 @@
-package ishant.proximity.proxiityassignment.ui.home.fragment
+package ishant.proximity.proxiityassignment.ui.chart
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,13 +10,16 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.github.aachartmodel.aainfographics.aachartcreator.AAChartModel
+import com.github.aachartmodel.aainfographics.aachartcreator.AAChartType
+import com.github.aachartmodel.aainfographics.aachartcreator.AASeriesElement
 import ishant.proximity.proxiityassignment.R
 import ishant.proximity.proxiityassignment.app.custom.MethodsRepo
 import ishant.proximity.proxiityassignment.base.BaseActivity
 import ishant.proximity.proxiityassignment.base.RetrySnackBarClickListener
+import ishant.proximity.proxiityassignment.databinding.ChartFramgmentBinding
 import ishant.proximity.proxiityassignment.databinding.HomeFramgmentBinding
 import ishant.proximity.proxiityassignment.databinding.SplashFramgmentBinding
-import ishant.proximity.proxiityassignment.ui.chart.ChartFragment
 import ishant.proximity.proxiityassignment.ui.home.activity.MainActivity
 import ishant.proximity.proxiityassignment.ui.home.adapter.AirQualityListAdapter
 import ishant.proximity.proxiityassignment.ui.home.viewmodel.HomeViewModel
@@ -28,27 +31,23 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.ArrayList
 
-class HomeFragment : Fragment(),RetrySnackBarClickListener,
-    AirQualityListAdapter.onClickItemListner {
-    private lateinit var binding: HomeFramgmentBinding
+class ChartFragment : Fragment(),RetrySnackBarClickListener
+{
+    private lateinit var binding: ChartFramgmentBinding
     private val homeViewModel by viewModel<HomeViewModel>()
     private val methods by inject<MethodsRepo>()
-    private lateinit var adapter:AirQualityListAdapter
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(LayoutInflater.from(requireContext()), R.layout.home_framgment, container, false)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(requireContext()), R.layout.chart_framgment, container, false)
         WorkStation()
         return binding.root
     }
 
     private fun WorkStation() {
         homeViewModel.connectSocketNow()
-        adapter = AirQualityListAdapter(requireContext(),methods,this)
-        adapter.UpdateList(ArrayList<AirQualityData>())
-        binding.airPurifireRecycler.adapter = adapter
         binding.toolbar.back.setOnClickListener {
             (requireActivity() as BaseActivity).onBackPressed()
         }
@@ -59,31 +58,40 @@ class HomeFragment : Fragment(),RetrySnackBarClickListener,
         lifecycleScope.launchWhenStarted {
             homeViewModel.airQualityResponseFlow.collect { event ->
                 when (event) {
-                    is HomeViewModel.ResponseAirQualitySealed.loading -> {
-                        if(event.isLoading){
-                            methods.show((requireActivity() as MainActivity).binding.progressBar)
-                        }else{
-                            methods.hide((requireActivity() as MainActivity).binding.progressBar)
-                        }
-                    }
+
                     is HomeViewModel.ResponseAirQualitySealed.Success -> {
-                        methods.hide((requireActivity() as MainActivity).binding.progressBar)
                         if(event.response.airQualityResponseNew.isNotEmpty()){
-                            adapter.UpdateList(ArrayList(event.response.airQualityResponseNew.toMutableList()))
+                            homeViewModel.cityAqiList(ArrayList(event.response.airQualityResponseNew),city = city!!)
+                            val chart = AAChartModel()
+                                .chartType(AAChartType.Column)
+                                .title(city+" "+getString(R.string.air_quality_chart))
+                                .dataLabelsEnabled(true)
+                                .series(
+                                    arrayOf(
+                                        AASeriesElement()
+                                            .name(city)
+                                            .data(homeViewModel.CitAqiList.toTypedArray())
+                                    )
+                                )
+
+                            binding.airDataChart.aa_drawChartWithChartModel(chart)
                         }else{
                             (requireActivity() as BaseActivity).showCustomAlert(getString(R.string.data_not_found)
                                 ,binding.root,getString(R.string.retry)
                                 ,true
-                                , listener = this@HomeFragment)
+                                , listener = this@ChartFragment)
                         }
                     }
                     is HomeViewModel.ResponseAirQualitySealed.message ->{
                         (requireActivity() as BaseActivity).showCustomAlert(event.message,binding.root)
                     }
                     is HomeViewModel.ResponseAirQualitySealed.ErrorOnResponse -> {
-                        methods.hide((requireActivity() as MainActivity).binding.progressBar)
-                        (requireActivity() as BaseActivity).showCustomAlert(event.message,binding.root,getString(
-                            R.string.retry),true, listener = this@HomeFragment)
+                        (requireActivity() as BaseActivity).showCustomAlert(event.message
+                            ,binding.root
+                            ,getString(
+                            R.string.retry)
+                            ,true
+                            , listener = this@ChartFragment)
                     }
                     else -> Unit
                 }
@@ -93,17 +101,17 @@ class HomeFragment : Fragment(),RetrySnackBarClickListener,
 
     override fun onResume() {
         super.onResume()
-        methods.hide(binding.toolbar.back)
-        binding.toolbar.ToolbarTitle.text=getString(R.string.home)
+        methods.show(binding.toolbar.back)
+        binding.toolbar.ToolbarTitle.text=city+" "+getString(R.string.air_quality_chart)
     }
     companion object {
-        private var instance: HomeFragment? = null
+        private var instance: ChartFragment? = null
+        private var city:String? = null
 
         @JvmStatic
-        fun getInstance(): HomeFragment? {
-            if (instance == null) {
-                instance = HomeFragment()
-            }
+        fun getInstance(cityName:String): ChartFragment? {
+            instance = ChartFragment()
+            city=cityName
             return instance
         }
 
@@ -113,7 +121,5 @@ class HomeFragment : Fragment(),RetrySnackBarClickListener,
         homeViewModel.connectSocketNow()
     }
 
-    override fun onClick( data: AirQualityData) {
-        (requireActivity() as BaseActivity).setFragment(ChartFragment.getInstance(data.city!!)!!,true)
-    }
+
 }

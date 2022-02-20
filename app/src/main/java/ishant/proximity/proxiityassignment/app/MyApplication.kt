@@ -2,9 +2,12 @@ package ishant.proximity.proxiityassignment.app
 
 import android.app.Application
 import android.content.Context
+import ishant.proximity.proxiityassignment.BuildConfig
 import ishant.proximity.proxiityassignment.di.appModule
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.logger.Level
 
 class MyApplication : Application() {
 
@@ -17,7 +20,7 @@ class MyApplication : Application() {
         context = this
         startKoin {
             // use Koin logger
-            printLogger()
+            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             // declare used Android context
             androidContext(context)
             // declare modules

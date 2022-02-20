@@ -11,6 +11,7 @@ abstract class BaseAdapter<N,Y:ViewBinding>(val context: Context, private val la
     private var list: java.util.ArrayList<N>? = ArrayList()
    fun UpdateList(list:java.util.ArrayList<N>){
        list.also { this.list = it }
+       notifyDataSetChanged()
    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): BaseViewHolder<Y> {
@@ -20,14 +21,14 @@ abstract class BaseAdapter<N,Y:ViewBinding>(val context: Context, private val la
 
     override fun onBindViewHolder(viewHolder: BaseViewHolder<Y>, position: Int) {
         if(list!=null && list!!.size>0){
-            onViewHolderBind(viewHolder,viewHolder.binding, position, list!!.get(position))
+            onViewHolderBind(viewHolder,viewHolder.binding, position, list!!.get(position),list!!)
         }
     }
 
     override fun getItemCount(): Int {
-        return 10 //list!!.size
+      return list!!.size
     }
 
-    abstract fun onViewHolderBind(viewHolder: BaseViewHolder<Y>,binding: Y, position: Int, data: N)
+    abstract fun onViewHolderBind(viewHolder: BaseViewHolder<Y>,binding: Y, position: Int, data: N,list:java.util.ArrayList<N>)
 
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import ishant.proximity.proxiityassignment.R
 import ishant.proximity.proxiityassignment.base.BaseActivity
 import ishant.proximity.proxiityassignment.databinding.SplashFramgmentBinding
+import ishant.proximity.proxiityassignment.ui.home.fragment.HomeFragment
 import ishant.proximity.proxiityassignment.ui.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,7 +22,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SplashFragment : Fragment(), Animation.AnimationListener {
     private lateinit var binding: SplashFramgmentBinding
-    private val homeViewModel by viewModel<HomeViewModel>()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +45,7 @@ class SplashFragment : Fragment(), Animation.AnimationListener {
 
         lifecycleScope.launch (Dispatchers.Main){
             delay(2000L)
-            (requireActivity() as BaseActivity).setFragment(R.layout.splash_framgment,SplashFragment.getInstance()!!,false)
+            (requireActivity() as BaseActivity).setFragment(HomeFragment.getInstance()!!,true)
         }
 
     }

@@ -5,6 +5,7 @@ pluginManagement {
         maven {
             url 'https://maven.fabric.io/public'
         }
+        maven { url 'https://www.jitpack.io' }
         maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         mavenCentral()
@@ -15,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://www.jitpack.io' }
     }
 }
 rootProject.name = "ProxiityAssignment"

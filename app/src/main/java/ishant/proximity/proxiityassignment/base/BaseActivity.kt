@@ -34,15 +34,15 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
-    fun baseContext():Context{
+
+    fun baseContext(): Context {
         return this@BaseActivity
     }
 
 
-
-    fun setFragment(resourceView: Int, fragment: Fragment, addToBackStackFlag: Boolean) {
+    fun setFragment(fragment: Fragment, addToBackStackFlag: Boolean) {
         val mFragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        val currentFragment = supportFragmentManager.findFragmentById(resourceView)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
 
         if (currentFragment == null) {
             if (supportFragmentManager.fragments.size != 0) {
@@ -50,8 +50,16 @@ abstract class BaseActivity : AppCompatActivity() {
                     mFragmentTransaction.addToBackStack(fragment.javaClass.simpleName)
                 }
 
-                mFragmentTransaction.replace(resourceView, fragment)
+                mFragmentTransaction.replace(R.id.container, fragment)
                 mFragmentTransaction.commit()
+            } else {
+                if (addToBackStackFlag) {
+                    mFragmentTransaction.addToBackStack(fragment.javaClass.simpleName)
+                }
+                mFragmentTransaction!!.replace(R.id.container, fragment!!)
+                if (!isFinishing && !isDestroyed) {
+                    mFragmentTransaction.commit()
+                }
             }
         } else {
             if (!(currentFragment.javaClass.simpleName.equals(fragment.javaClass.simpleName))) {
@@ -59,7 +67,7 @@ abstract class BaseActivity : AppCompatActivity() {
                     if (addToBackStackFlag) {
                         mFragmentTransaction.addToBackStack(fragment.javaClass.simpleName)
                     }
-                    mFragmentTransaction.replace(resourceView, fragment)
+                    mFragmentTransaction.replace(R.id.container, fragment)
                     mFragmentTransaction.commit()
                 }
             }
@@ -78,54 +86,31 @@ abstract class BaseActivity : AppCompatActivity() {
 
         if (getCurrentFragment() is SplashFragment) {
             finish()
-        } else if (backStackCount > 1) {
-            if (fragment is HomeFragment) {
-                if (doubleBackToExitPressedOnce) {
-                    finish()
-                    return
-                }
-                doubleBackToExitPressedOnce = true
-                Toast.makeText(baseContext(),getString(R.string.press_back_again),Toast.LENGTH_LONG).show()
-                lifecycleScope.launch(Dispatchers.Default) {
-                    delay(2000)
-                    doubleBackToExitPressedOnce = false
-                }
-            } else {
-                val backStackEntry = fm.getBackStackEntryAt(backStackCount - 1)
-                val frag = fm.findFragmentByTag(backStackEntry.name)
-
-                if (frag!!.childFragmentManager.backStackEntryCount > 1) {
-                    frag.childFragmentManager.popBackStack()
-                } else {
-                    fm.popBackStack()
-                }
+        } else if (fragment is HomeFragment) {
+            if (doubleBackToExitPressedOnce) {
+                finish()
+                return
             }
-
+            doubleBackToExitPressedOnce = true
+            Toast.makeText(baseContext(), getString(R.string.press_back_again), Toast.LENGTH_LONG)
+                .show()
+            lifecycleScope.launch(Dispatchers.Default) {
+                delay(2000)
+                doubleBackToExitPressedOnce = false
+            }
         } else {
-            if (fragment is HomeFragment) {
-                if (doubleBackToExitPressedOnce) {
-                    finish()
-                    return
-                }
-                doubleBackToExitPressedOnce = true
-               Toast.makeText(baseContext(),getString(R.string.press_back_again),Toast.LENGTH_LONG).show()
-                lifecycleScope.launch(Dispatchers.Default) {
-                    delay(2000)
-                    doubleBackToExitPressedOnce = false
-                }
+            if (backStackCount > 0) {
+                fm.popBackStackImmediate()
             } else {
-                val backStackEntry = fm.getBackStackEntryAt(fm.backStackEntryCount - 1)
-                val frag = fm.findFragmentByTag(backStackEntry.name)
-                if (frag!!.childFragmentManager.backStackEntryCount > 1) {
-                    frag.childFragmentManager.popBackStack()
-                } else {
-                    finish()
-                }
+                super.onBackPressed()
             }
         }
+
+
     }
 
-    fun switchActivity( intent: Intent){
+
+    fun switchActivity(intent: Intent) {
         startActivity(intent)
     }
 
@@ -144,17 +129,26 @@ abstract class BaseActivity : AppCompatActivity() {
         }
         snackBar.setActionTextColor(Color.BLUE)
         val snackBarView: View = snackBar.getView()
-        val textView = snackBarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val textView =
+            snackBarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         textView.setTextColor(Color.WHITE)
         snackBar.show()
     }
 
+    open fun showCustomAlert(msg: String?, v: View?) {
+        snackBar = Snackbar.make(v!!, msg!!, Snackbar.LENGTH_LONG)
+        snackBar.setActionTextColor(Color.BLUE)
+        val snackBarView: View = snackBar.getView()
+        val textView =
+            snackBarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.setTextColor(Color.WHITE)
+        snackBar.show()
+    }
 
     open fun getCurrentFragment(): Fragment? {
         fragment = supportFragmentManager.findFragmentById(R.id.container)
         return fragment
     }
-
 
 
 }
