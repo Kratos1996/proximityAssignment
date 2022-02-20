@@ -29,8 +29,6 @@ class MyApplication : Application() {
 
     }
 
-
-
     fun getInstance(): MyApplication {
         return application
     }

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ishant.proximity.proxiityassignment.app.custom.MethodsRepo
-import ishant.proximity.proxiityassignment.di.models.CoroutineContextProvider
 import ishant.proximity.proxiityassignment.websocketservice.model.AirQualityData
 import ishant.proximity.proxiityassignment.websocketservice.model.AirQualityResponse
 import ishant.proximity.proxiityassignment.websocketservice.model.WebSocketState
